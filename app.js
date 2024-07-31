@@ -357,44 +357,48 @@ app.get("/problemdetails/:problemId", async (req, res) => {
 
 app.post('/addproblem', async (req, res) => {
     try {
-      const { 
-        title, 
-        problem_statement, 
-        input_description, 
-        output_description, 
-        sample_cases, 
-        constraints,
-        level, 
-        hints, 
-        topics, 
-        locked_test_cases, 
-        admin_solution 
-      } = req.body;
-  
-      
-  
-      const newProblem = new Problem({
-        title,
-        problem_statement,
-        input_description,
-        output_description,
-        sample_cases,
-        constraints,
-        level,
-        hints,
-        topics,
-        locked_test_cases,
-        admin_solution,
-        created_at: new Date(),
-        updated_at: new Date()
-      });
-  
-      const savedProblem = await newProblem.save();
-      res.status(201).json(savedProblem);
+        const { 
+            title, 
+            problem_statement, 
+            input_description, 
+            output_description, 
+            sample_cases, 
+            constraints,
+            level, 
+            hints, 
+            topics, 
+            locked_test_cases, 
+            admin_solution 
+        } = req.body;
+
+        if (!title || !problem_statement || !input_description || !output_description || !constraints || !level) {
+            return res.status(400).json({ error: "Required fields are missing" });
+        }
+
+        const newProblem = new Problem({
+            title,
+            problem_statement,
+            input_description,
+            output_description,
+            sample_cases,
+            constraints,
+            level,
+            hints,
+            topics,
+            locked_test_cases,
+            admin_solution,
+            created_at: new Date(),
+            updated_at: new Date()
+        });
+
+        const savedProblem = await newProblem.save();
+        res.status(201).json(savedProblem);
     } catch (err) {
-      res.status(400).json({ error: err.message });
+        console.error(err);
+        res.status(400).json({ error: err.message });
     }
-  });
+});
+
 
   app.get('/api/problems', async (req, res) => {
     try {
